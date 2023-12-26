@@ -17,10 +17,11 @@
     "test:e2e:dev": "vitest",
     "test:cov": "vitest run --coverage",
     "prerelease": "npm run build",
-    "release": "release-it",
+    "release": "semantic-release",
     "prepare": "husky install"
   },
   "devDependencies": {
+    "@latipun7/releaserc": "^2.1.0",
     "@commitlint/cli": "18.4.3",
     "@commitlint/config-angular": "18.4.3",
     "@types/node": "20.10.5",
@@ -32,12 +33,18 @@
     "eslint-plugin-import": "2.29.1",
     "husky": "8.0.3",
     "lint-staged": "15.2.0",
+    "semantic-release": "^22.0.0",
     "prettier": "3.1.1",
     "reflect-metadata": "0.1.14",
     "release-it": "17.0.1",
     "rimraf": "5.0.5",
     "typescript": "5.3.3",
     "vitest": "^1.1.0"
+  },
+  "release": {
+    "extends": [
+      "@latipun7/releaserc"
+    ]
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.12"
