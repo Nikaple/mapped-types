@@ -1,6 +1,6 @@
 {
   "name": "@nikaple/mapped-types",
-  "version": "2.0.4",
+  "version": "1.0.0",
   "description": "Create data classes easily",
   "author": "nikaple",
   "license": "MIT",
