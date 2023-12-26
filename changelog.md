@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](https://semver.org) and [Conventio
 
 
 
+### [1.0.2](https://github.com/Nikaple/mapped-types/compare/v1.0.1...v1.0.2) (2023-12-26)
+
+
+### 🐛 Fixes
+
+- export function inheritPropertyDecorators [` efd8360 `](https://github.com/Nikaple/mapped-types/commit/efd8360abbdf4615514ea0861fe2658d4e360fc4).
+
 ### [1.0.1](https://github.com/Nikaple/mapped-types/compare/v1.0.0...v1.0.1) (2023-12-26)
 
 
