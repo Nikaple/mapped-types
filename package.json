@@ -6,6 +6,13 @@
   "license": "MIT",
   "url": "https://github.com/Nikaple/mapped-types#readme",
   "packageManager": "pnpm@7.33.1",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "index.ts",
+    "lib",
+    "dist"
+  ],
   "scripts": {
     "build": "rimraf -rf dist && tsc -p tsconfig.build.json",
     "format": "prettier \"{lib,tests}/**/*.ts\" --write",
