@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](https://semver.org) and [Conventio
 
 
 
+### [1.0.1](https://github.com/Nikaple/mapped-types/compare/v1.0.0...v1.0.1) (2023-12-26)
+
+
+### 🐛 Fixes
+
+- add publish config [` aa2474c `](https://github.com/Nikaple/mapped-types/commit/aa2474c218e7529f76fb0efcc6e91a0fb65a8f94).
+
 ## 1.0.0 (2023-12-26)
 
 
