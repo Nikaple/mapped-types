@@ -1,9 +1,8 @@
-import { Type } from '@nestjs/common';
+import { Type } from './types/type';
 import { MappedType } from './mapped-type.interface';
 import {
+  inheritPropertyDecorators,
   inheritPropertyInitializers,
-  inheritTransformationMetadata,
-  inheritValidationMetadata,
 } from './type-helpers.utils';
 import { RemoveFieldsWithType } from './types/remove-fields-with-type.type';
 
@@ -17,10 +16,9 @@ export function PickType<T, K extends keyof T>(
   abstract class PickClassType {
     constructor() {
       inheritPropertyInitializers(this, classRef, isInheritedPredicate);
+      inheritPropertyDecorators(this, classRef, isInheritedPredicate);
     }
   }
-  inheritValidationMetadata(classRef, PickClassType, isInheritedPredicate);
-  inheritTransformationMetadata(classRef, PickClassType, isInheritedPredicate);
 
   return PickClassType as MappedType<
     RemoveFieldsWithType<Pick<T, (typeof keys)[number]>, Function>

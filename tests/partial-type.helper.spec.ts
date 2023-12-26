@@ -1,84 +1,50 @@
-import { Expose, instanceToInstance, Transform, Type } from 'class-transformer';
-import { IsString, validate } from 'class-validator';
-import { PartialType } from '../lib';
-import { getValidationMetadataByTarget } from './type-helpers.test-utils';
-
+import { describe, it, expect } from 'vitest';
+import { OmitType, PartialType } from '../lib';
+import { Min, getMin } from './type-helpers.test-utils';
 describe('PartialType', () => {
-  class BaseUserDto {
-    @IsString()
-    @Transform(({ value }) => value + '_transformed')
-    @Type(() => String)
-    parentProperty!: string;
+  class TestClass {
+    prop1!: string;
+    prop2!: number;
+    prop3!: boolean;
   }
 
-  class CreateUserDto extends BaseUserDto {
-    login: string = 'defaultLogin';
+  it('should create a new class with all properties set to optional', () => {
+    const PartialTestClass = PartialType(TestClass);
+    const partial = new PartialTestClass();
 
-    @Expose()
-    @Transform(({ value }) => value + '_transformed')
-    @IsString()
-    password!: string;
-  }
-
-  class UpdateUserDto extends PartialType(CreateUserDto) {}
-
-  describe('Validation metadata', () => {
-    it('should inherit metadata', () => {
-      const validationKeys = getValidationMetadataByTarget(UpdateUserDto).map(
-        (item) => item.propertyName,
-      );
-      expect(validationKeys).toEqual([
-        'password',
-        'parentProperty',
-        'password',
-        'parentProperty',
-      ]);
-    });
-    describe('when object does not fulfil validation rules', () => {
-      it('"validate" should return validation errors', async () => {
-        const updateDto = new UpdateUserDto();
-        updateDto.password = 1234567 as any;
-
-        const validationErrors = await validate(updateDto);
-
-        expect(validationErrors.length).toEqual(1);
-        expect(validationErrors[0].constraints).toEqual({
-          isString: 'password must be a string',
-        });
-      });
-    });
-    describe('otherwise', () => {
-      it('"validate" should return an empty array', async () => {
-        const updateDto = new UpdateUserDto();
-        updateDto.password = '1234567891011';
-
-        const validationErrors = await validate(updateDto);
-        expect(validationErrors.length).toEqual(0);
-      });
-    });
+    expect(partial.prop1).toBeUndefined();
+    expect(partial.prop2).toBeUndefined();
+    expect(partial.prop3).toBeUndefined();
   });
 
-  describe('Transformer metadata', () => {
-    it('should inherit transformer metadata', () => {
-      const password = '1234567891011';
-      const parentProperty = 'test';
+  it('should inherit property initializers', () => {
+    class TestClassWithInitializer {
+      prop1 = 'default';
+      prop2!: number;
+    }
 
-      const updateDto = new UpdateUserDto();
-      updateDto.password = password;
-      updateDto.parentProperty = parentProperty;
+    const PartialTestClass = PartialType(TestClassWithInitializer);
+    const partial = new PartialTestClass();
 
-      const transformedDto = instanceToInstance(updateDto);
-      expect(transformedDto.password).toEqual(password + '_transformed');
-      expect(transformedDto.parentProperty).toEqual(
-        parentProperty + '_transformed',
-      );
-    });
+    expect(partial.prop1).toBe('default');
+    expect(partial.prop2).toBeUndefined();
   });
 
-  describe('Property initializers', () => {
-    it('should inherit property initializers', () => {
-      const updateUserDto = new UpdateUserDto();
-      expect(updateUserDto.login).toEqual('defaultLogin');
-    });
+  it('should inherit property decorators', () => {
+    class TestClassWithDecorator {
+      @Min(1)
+      prop1 = '';
+
+      @Min(2)
+      prop2 = 0;
+    }
+
+    const PartialTestClass = PartialType(TestClassWithDecorator);
+    const partial = new PartialTestClass();
+
+    expect(partial.prop1).toBe('');
+    expect(partial.prop2).toBe(0);
+    expect(getMin(partial, 'prop1')).toBe(1);
+    expect(getMin(partial, 'prop2')).toBe(2);
   });
 });

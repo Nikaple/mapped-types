@@ -3,9 +3,4 @@ export * from './mapped-type.interface';
 export * from './omit-type.helper';
 export * from './partial-type.helper';
 export * from './pick-type.helper';
-export {
-  applyIsOptionalDecorator,
-  inheritPropertyInitializers,
-  inheritTransformationMetadata,
-  inheritValidationMetadata,
-} from './type-helpers.utils';
+export { inheritPropertyInitializers } from './type-helpers.utils';

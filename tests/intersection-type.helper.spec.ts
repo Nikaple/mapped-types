@@ -1,91 +1,48 @@
-import { instanceToInstance, Transform } from 'class-transformer';
-import { IsString, MinLength, validate } from 'class-validator';
-import { IntersectionType } from '../lib';
-import { getValidationMetadataByTarget } from './type-helpers.test-utils';
+import { describe, it, expect } from 'vitest';
+import { IntersectionType } from '../lib/intersection-type.helper';
+import { Min, getMin } from './type-helpers.test-utils';
 
 describe('IntersectionType', () => {
-  class ClassA {
-    @MinLength(10)
-    login = 'defaultLoginWithMin10Chars';
-
-    @Transform(({ value }) => value + '_transformed')
-    @MinLength(10)
-    password!: string;
+  class A {
+    @Min('a')
+    a = 'a';
   }
 
-  class ClassB {
-    @IsString()
-    firstName = 'defaultFirst';
-
-    @Transform(({ value }) => value + '_transformed')
-    @MinLength(5)
-    lastName!: string;
+  class B {
+    @Min('b')
+    b = 'b';
   }
 
-  class UpdateUserDto extends IntersectionType(ClassA, ClassB) {}
+  class C {
+    @Min('c')
+    c = 'c';
+  }
 
-  describe('Validation metadata', () => {
-    it('should inherit metadata for all properties from class A and class B', () => {
-      const validationKeys = getValidationMetadataByTarget(UpdateUserDto).map(
-        (item) => item.propertyName,
-      );
-      expect(validationKeys).toEqual([
-        'login',
-        'password',
-        'firstName',
-        'lastName',
-      ]);
-    });
-    describe('when object does not fulfil validation rules', () => {
-      it('"validate" should return validation errors', async () => {
-        const updateDto = new UpdateUserDto();
-        updateDto.password = '1234567';
+  it('should create an intersection class type', () => {
+    const IntersectionAB = IntersectionType(A, B);
+    const instanceAB = new IntersectionAB();
+    expect(instanceAB.a).toBe('a');
+    expect(instanceAB.b).toBe('b');
 
-        const validationErrors = await validate(updateDto);
-
-        expect(validationErrors.length).toEqual(2);
-        expect(validationErrors[0].constraints).toEqual({
-          minLength: 'password must be longer than or equal to 10 characters',
-        });
-        expect(validationErrors[1].constraints).toEqual({
-          minLength: 'lastName must be longer than or equal to 5 characters',
-        });
-      });
-    });
-    describe('otherwise', () => {
-      it('"validate" should return an empty array', async () => {
-        const updateDto = new UpdateUserDto();
-        updateDto.password = '1234567891011';
-        updateDto.firstName = 'firstNameTest';
-        updateDto.lastName = 'lastNameTest';
-        updateDto.login = 'mylogintesttest';
-
-        const validationErrors = await validate(updateDto);
-        expect(validationErrors.length).toEqual(0);
-      });
-    });
+    const IntersectionABC = IntersectionType(A, B, C);
+    const instanceABC = new IntersectionABC();
+    expect(instanceABC.a).toBe('a');
+    expect(instanceABC.b).toBe('b');
+    expect(instanceABC.c).toBe('c');
   });
 
-  describe('Transformer metadata', () => {
-    it('should inherit transformer metadata', () => {
-      const password = '1234567891011';
-      const lastName = 'lastNameTest';
+  it('should inherit property initializers', () => {
+    class D extends A {
+      @Min('d')
+      d = 'd';
+    }
 
-      const updateDto = new UpdateUserDto();
-      updateDto.password = password;
-      updateDto.lastName = lastName;
+    const IntersectionABD = IntersectionType(A, B, D);
+    const instanceABD = new IntersectionABD();
+    expect(instanceABD.a).toBe('a');
+    expect(instanceABD.b).toBe('b');
+    expect(instanceABD.d).toBe('d');
 
-      const transformedDto = instanceToInstance(updateDto);
-      expect(transformedDto.lastName).toEqual(lastName + '_transformed');
-      expect(transformedDto.password).toEqual(password + '_transformed');
-    });
-  });
-
-  describe('Property initializers', () => {
-    it('should inherit property initializers', () => {
-      const updateUserDto = new UpdateUserDto();
-      expect(updateUserDto.login).toEqual('defaultLoginWithMin10Chars');
-      expect(updateUserDto.firstName).toEqual('defaultFirst');
-    });
+    expect(getMin(instanceABD, 'a')).toBe('a');
   });
 });

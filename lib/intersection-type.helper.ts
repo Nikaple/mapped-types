@@ -1,10 +1,9 @@
-import { Type } from '@nestjs/common';
+import { Type } from './types/type';
 
 import { MappedType } from './mapped-type.interface';
 import {
+  inheritPropertyDecorators,
   inheritPropertyInitializers,
-  inheritTransformationMetadata,
-  inheritValidationMetadata,
 } from './type-helpers.utils';
 import { RemoveFieldsWithType } from './types/remove-fields-with-type.type';
 
@@ -38,14 +37,10 @@ export function IntersectionType<T extends Type[]>(...classRefs: T) {
     constructor() {
       classRefs.forEach((classRef) => {
         inheritPropertyInitializers(this, classRef);
+        inheritPropertyDecorators(this, classRef);
       });
     }
   }
-
-  classRefs.forEach((classRef) => {
-    inheritValidationMetadata(classRef, IntersectionClassType);
-    inheritTransformationMetadata(classRef, IntersectionClassType);
-  });
 
   const intersectedNames = classRefs.reduce((prev, ref) => prev + ref.name, '');
   Object.defineProperty(IntersectionClassType, 'name', {

@@ -1,17 +1,9 @@
-import { MetadataStorage } from 'class-validator';
+import 'reflect-metadata';
 
-export function getValidationMetadataByTarget(target: Function) {
-  const classValidator: typeof import('class-validator') = require('class-validator');
-  const metadataStorage: MetadataStorage = (classValidator as any)
-    .getMetadataStorage
-    ? (classValidator as any).getMetadataStorage()
-    : classValidator.getFromContainer(classValidator.MetadataStorage);
+export function Min(val: any): PropertyDecorator {
+  return Reflect.metadata('min', val);
+}
 
-  const targetMetadata = metadataStorage.getTargetValidationMetadatas(
-    target,
-    null!,
-    false,
-    false,
-  );
-  return targetMetadata;
+export function getMin(obj: object, key: string) {
+  return Reflect.getMetadata('min', obj, key);
 }
