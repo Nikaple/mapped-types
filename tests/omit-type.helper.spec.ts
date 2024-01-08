@@ -8,6 +8,8 @@ describe('OmitType', () => {
     foo = '';
 
     version = 1;
+
+    undef = undefined;
   }
 
   class FooV2 extends OmitType(FooV1, ['version']) {
@@ -24,6 +26,7 @@ describe('OmitType', () => {
       expect(fooV2.foo).toEqual('');
       expect(fooV2.bar).toEqual('bar');
       expect(fooV2.version).toEqual(2);
+      expect('undef' in fooV2).toBe(true)
     });
   });
 });

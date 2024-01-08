@@ -12,11 +12,6 @@ export function inheritPropertyInitializers(
     const propertyNames = Object.getOwnPropertyNames(tempInstance);
 
     propertyNames
-      .filter(
-        (propertyName) =>
-          typeof tempInstance[propertyName] !== 'undefined' &&
-          typeof target[propertyName] === 'undefined',
-      )
       .filter((propertyName) => isPropertyInherited(propertyName))
       .forEach((propertyName) => {
         target[propertyName] = tempInstance[propertyName];
