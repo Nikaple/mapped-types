@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](https://semver.org) and [Conventio
 
 
 
+### [1.0.3](https://github.com/Nikaple/mapped-types/compare/v1.0.2...v1.0.3) (2024-01-08)
+
+
+### 🐛 Fixes
+
+- inherit undefined props [` 15fb820 `](https://github.com/Nikaple/mapped-types/commit/15fb8209ce5d07c7eb33d2e202cf08853bcb720d).
+
 ### [1.0.2](https://github.com/Nikaple/mapped-types/compare/v1.0.1...v1.0.2) (2023-12-26)
 
 
